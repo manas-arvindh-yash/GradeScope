@@ -149,4 +149,4 @@ if submitted:
     prediction = model.predict(input_df)[0]
 
     st.success(f"🎯 Predicted Total Score: **{prediction:.2f}**")
- complete. You can now explore predictions and analysis.")
+ 
