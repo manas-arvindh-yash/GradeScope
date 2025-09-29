@@ -79,7 +79,7 @@ def add_bg(image_file):
             width: 100%;
             height: 100%;
             background: inherit;
-            filter: blur(18px);  /* ⬅️ Increased blur from 6px to 12px */
+            filter: blur(36px);  /* ⬅️ Increased blur from 6px to 12px */
             z-index: -2;
         }}
         /* Dark overlay layer */
