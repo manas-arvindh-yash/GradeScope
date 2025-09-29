@@ -138,6 +138,21 @@ with st.form("prediction_form"):
         income = st.selectbox("Family Income Level", encoders['Family_Income_Level'].classes_)
 
     submitted = st.form_submit_button("Predict")
+# ------------------------
+# Style: Bold + Italic form labels
+# ------------------------
+st.markdown(
+    """
+    <style>
+    label, .stSlider label, .stNumberInput label, .stSelectbox label {
+        font-weight: bold !important;
+        font-style: italic !important;
+        color: white; /* optional, keeps text visible on dark bg */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 if submitted:
     input_data = {
