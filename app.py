@@ -74,20 +74,22 @@ st.markdown("<h1 style='text-align: center;'>📊 GradeScope</h1>", unsafe_allow
 with st.form("prediction_form"):
     col1, col2 = st.columns(2)
 
-    # Left Column → All Sliders (in order)
+    # Left Column → Sliders first, then some manual inputs
     with col1:
         attendance = st.slider("Attendance (%)", 0, 100, 75)
         study_hours = st.slider("Study Hours/Week", 0, 60, 15)
         stress = st.slider("Stress Level (1-10)", 1, 10, 5)
         sleep = st.slider("Sleep Hours/Night", 0, 12, 7)
 
-    # Right Column → Other Inputs
+        # Move some manual inputs here ↓
+        midterm = st.number_input("Midterm Score", min_value=0, max_value=100, value=50)
+        final = st.number_input("Final Score", min_value=0, max_value=100, value=60)
+
+    # Right Column → Rest of the inputs
     with col2:
         gender = st.selectbox("Gender", encoders['Gender'].classes_)
         age = st.number_input("Age", min_value=10, max_value=30, value=18)
         dept = st.selectbox("Department", encoders['Department'].classes_)
-        midterm = st.number_input("Midterm Score", min_value=0, max_value=100, value=50)
-        final = st.number_input("Final Score", min_value=0, max_value=100, value=60)
         assignments = st.number_input("Assignments Avg", min_value=0, max_value=100, value=70)
         projects = st.number_input("Projects Score", min_value=0, max_value=100, value=65)
         activities = st.selectbox("Extracurricular Activities", encoders['Extracurricular_Activities'].classes_)
