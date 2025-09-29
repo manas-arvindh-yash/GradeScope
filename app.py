@@ -21,7 +21,7 @@ def load_data():
 df = load_data()
 
 # ------------------------
-# Validate Columns
+# Required Columns
 # ------------------------
 required_columns = [
     'Gender', 'Age', 'Department', 'Attendance (%)',
@@ -64,37 +64,39 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Streamlit UI
+# UI Title
 # ------------------------
-st.markdown("<h1 style='text-align: center;'>📊 GradeScope: Student Performance Prediction</h1>", unsafe_allow_html=True)
-
-st.markdown("Enter student details below to predict their **Total Score**:")
+st.markdown("<h1 style='text-align: center;'>📊 GradeScope</h1>", unsafe_allow_html=True)
 
 # ------------------------
-# Live Prediction Form
+# Compact Prediction Form
 # ------------------------
 with st.form("prediction_form"):
-    gender = st.selectbox("Gender", encoders['Gender'].classes_)
-    age = st.number_input("Age", min_value=10, max_value=30, value=18)
-    dept = st.selectbox("Department", encoders['Department'].classes_)
-    attendance = st.slider("Attendance (%)", 0, 100, 75)
-    midterm = st.number_input("Midterm Score", min_value=0, max_value=100, value=50)
-    final = st.number_input("Final Score", min_value=0, max_value=100, value=60)
-    assignments = st.number_input("Assignments Avg", min_value=0, max_value=100, value=70)
-    projects = st.number_input("Projects Score", min_value=0, max_value=100, value=65)
-    study_hours = st.slider("Study Hours per Week", 0, 60, 15)
-    activities = st.selectbox("Extracurricular Activities", encoders['Extracurricular_Activities'].classes_)
-    quizzes = st.number_input("Quizzes Avg", min_value=0, max_value=100, value=55)
-    internet = st.selectbox("Internet Access at Home", encoders['Internet_Access_at_Home'].classes_)
-    parent_edu = st.selectbox("Parent Education Level", encoders['Parent_Education_Level'].classes_)
-    income = st.selectbox("Family Income Level", encoders['Family_Income_Level'].classes_)
-    stress = st.slider("Stress Level (1-10)", 1, 10, 5)
-    sleep = st.slider("Sleep Hours per Night", 0, 12, 7)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        gender = st.selectbox("Gender", encoders['Gender'].classes_)
+        age = st.number_input("Age", min_value=10, max_value=30, value=18)
+        dept = st.selectbox("Department", encoders['Department'].classes_)
+        attendance = st.slider("Attendance (%)", 0, 100, 75)
+        midterm = st.number_input("Midterm Score", min_value=0, max_value=100, value=50)
+        final = st.number_input("Final Score", min_value=0, max_value=100, value=60)
+        assignments = st.number_input("Assignments Avg", min_value=0, max_value=100, value=70)
+
+    with col2:
+        projects = st.number_input("Projects Score", min_value=0, max_value=100, value=65)
+        study_hours = st.slider("Study Hours/Week", 0, 60, 15)
+        activities = st.selectbox("Extracurricular Activities", encoders['Extracurricular_Activities'].classes_)
+        quizzes = st.number_input("Quizzes Avg", min_value=0, max_value=100, value=55)
+        internet = st.selectbox("Internet Access", encoders['Internet_Access_at_Home'].classes_)
+        parent_edu = st.selectbox("Parent Education Level", encoders['Parent_Education_Level'].classes_)
+        income = st.selectbox("Family Income Level", encoders['Family_Income_Level'].classes_)
+        stress = st.slider("Stress Level (1-10)", 1, 10, 5)
+        sleep = st.slider("Sleep Hours/Night", 0, 12, 7)
 
     submitted = st.form_submit_button("Predict")
 
 if submitted:
-    # Encode categorical inputs
     input_data = {
         'Gender': encoders['Gender'].transform([gender])[0],
         'Age': age,
