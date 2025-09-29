@@ -58,7 +58,7 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Background Styling
+# Background Styling (only background blurred)
 # ------------------------
 def add_bg(image_file):
     with open(image_file, "rb") as file:
@@ -67,10 +67,19 @@ def add_bg(image_file):
         f"""
         <style>
         .stApp {{
-            background-image: url("data:image/png;base64,{encoded}");
+            background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            filter: blur(2px);
+        }}
+        /* Dark overlay for readability */
+        .stApp::before {{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: -1;
         }}
         </style>
         """,
@@ -80,13 +89,14 @@ def add_bg(image_file):
 add_bg("A celebratory backgr.png")
 
 # ------------------------
-# Logo + Title
+# Logo + Title (without emoji)
 # ------------------------
 col_logo, col_title = st.columns([1,5])
 with col_logo:
-    st.image("GradeScope logo 1.png", width=100)
+    st.image("GradeScope logo 1.png", width=90)
 with col_title:
-    st.markdown("<h1 style='text-align: left; color: white;'>📊 GradeScope</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: left; color: white;'>GradeScope</h1>", unsafe_allow_html=True)
+
 
 # ------------------------
 # Prediction Form
