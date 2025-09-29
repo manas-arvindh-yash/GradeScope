@@ -4,6 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import streamlit as st
+import base64
 
 # ------------------------
 # Page Config
@@ -21,7 +22,7 @@ def load_data():
 df = load_data()
 
 # ------------------------
-# Required Columns
+# Encode Columns
 # ------------------------
 required_columns = [
     'Gender', 'Age', 'Department', 'Attendance (%)',
@@ -33,15 +34,8 @@ required_columns = [
     'Sleep_Hours_per_Night', 'Total_Score'
 ]
 
-if not all(col in df.columns for col in required_columns):
-    st.error("❌ Dataset is missing required columns.")
-    st.stop()
-
 df = df[required_columns]
 
-# ------------------------
-# Encode Categorical Columns
-# ------------------------
 cat_cols = [
     'Gender', 'Department', 'Extracurricular_Activities',
     'Internet_Access_at_Home', 'Parent_Education_Level',
@@ -64,36 +58,58 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# UI Title
+# Background Styling
 # ------------------------
-st.markdown("<h1 style='text-align: center;'>📊 GradeScope</h1>", unsafe_allow_html=True)
+def add_bg(image_file):
+    with open(image_file, "rb") as file:
+        encoded = base64.b64encode(file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px);
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+add_bg("A celebratory backgr.png")
 
 # ------------------------
-# Compact Prediction Form
+# Logo + Title
+# ------------------------
+col_logo, col_title = st.columns([1,5])
+with col_logo:
+    st.image("GradeScope logo 1.png", width=100)
+with col_title:
+    st.markdown("<h1 style='text-align: left; color: white;'>📊 GradeScope</h1>", unsafe_allow_html=True)
+
+# ------------------------
+# Prediction Form
 # ------------------------
 with st.form("prediction_form"):
     col1, col2 = st.columns(2)
 
-    # Left Column → Sliders + some numeric inputs
     with col1:
         attendance = st.slider("Attendance (%)", 0, 100, 75)
         study_hours = st.slider("Study Hours/Week", 0, 60, 15)
         stress = st.slider("Stress Level (1-10)", 1, 10, 5)
         sleep = st.slider("Sleep Hours/Night", 0, 12, 7)
-
-        # Shift more numeric inputs here
         midterm = st.number_input("Midterm Score", min_value=0, max_value=100, value=50)
         final = st.number_input("Final Score", min_value=0, max_value=100, value=60)
-        assignments = st.number_input("Assignments Avg", min_value=0, max_value=100, value=70)
-        projects = st.number_input("Projects Score", min_value=0, max_value=100, value=65)
 
-    # Right Column → Mostly categorical + remaining numeric
     with col2:
         gender = st.selectbox("Gender", encoders['Gender'].classes_)
         age = st.number_input("Age", min_value=10, max_value=30, value=18)
         dept = st.selectbox("Department", encoders['Department'].classes_)
-        quizzes = st.number_input("Quizzes Avg", min_value=0, max_value=100, value=55)
+        assignments = st.number_input("Assignments Avg", min_value=0, max_value=100, value=70)
+        projects = st.number_input("Projects Score", min_value=0, max_value=100, value=65)
         activities = st.selectbox("Extracurricular Activities", encoders['Extracurricular_Activities'].classes_)
+        quizzes = st.number_input("Quizzes Avg", min_value=0, max_value=100, value=55)
         internet = st.selectbox("Internet Access", encoders['Internet_Access_at_Home'].classes_)
         parent_edu = st.selectbox("Parent Education Level", encoders['Parent_Education_Level'].classes_)
         income = st.selectbox("Family Income Level", encoders['Family_Income_Level'].classes_)
