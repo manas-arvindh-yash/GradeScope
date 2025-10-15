@@ -58,39 +58,45 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Background Styling (more blur on background only)
+# Background Styling (only background image blurred)
 # ------------------------
 def add_bg(image_file):
+    import base64
     with open(image_file, "rb") as file:
         encoded = base64.b64encode(file.read()).decode()
+
     st.markdown(
         f"""
         <style>
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
+            position: relative;
         }}
-        /* Blurred background layer */
+
+        /* Create a blurred background layer */
         .stApp::before {{
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: inherit;
-            filter: blur(36px);  /* ⬅️ Increased blur from 6px to 12px */
+            background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
+            background-size: cover;
+            filter: blur(14px);  /* Adjust blur here */
             z-index: -2;
         }}
-        /* Dark overlay layer */
+
+        /* Add a slight dark overlay for contrast */
         .stApp::after {{
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.35);
+            background-color: rgba(0,0,0,0.25);
             z-index: -1;
         }}
         </style>
@@ -99,6 +105,7 @@ def add_bg(image_file):
     )
 
 add_bg("A celebratory backgr.png")
+
 
 
 # ------------------------
