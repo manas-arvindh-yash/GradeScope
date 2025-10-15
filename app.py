@@ -1,4 +1,5 @@
 # app.py — Clean Normal Version
+import base64
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,6 +7,48 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
+def set_background(image_path):
+    with open(image_path, "rb") as f:
+        data = f.read()
+    encoded = base64.b64encode(data).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        /* Blurred background image */
+        body::before {{
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+            filter: blur(10px); /* adjust blur strength */
+            transform: scale(1.05); /* prevent edge clipping */
+            z-index: -2;
+        }}
+
+        /* Subtle dark overlay for readability */
+        body::after {{
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.25);
+            z-index: -1;
+        }}
+
+        /* Make sure app content stays above the background */
+        .stApp, .main, .block-container {{
+            position: relative;
+            z-index: 1;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Call function with your uploaded image
+set_background("A celebratory backgr.png")
 # ------------------------
 # Page setup
 # ------------------------
