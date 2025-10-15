@@ -1,19 +1,18 @@
-# app.py
-import base64
+# app.py — Clean Normal Version
+import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-import streamlit as st
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Page config
+# Page setup
 # ------------------------
 st.set_page_config(page_title="GradeScope", layout="centered")
 
 # ------------------------
-# Load dataset
+# Load data
 # ------------------------
 @st.cache_data
 def load_data():
@@ -22,7 +21,7 @@ def load_data():
 df = load_data()
 
 # ------------------------
-# Required columns check
+# Prepare data
 # ------------------------
 required_columns = [
     'Gender', 'Age', 'Department', 'Attendance (%)',
@@ -34,13 +33,11 @@ required_columns = [
     'Sleep_Hours_per_Night', 'Total_Score'
 ]
 if not all(col in df.columns for col in required_columns):
-    st.error("Dataset is missing required columns.")
+    st.error("Dataset missing required columns.")
     st.stop()
 df = df[required_columns]
 
-# ------------------------
 # Encode categorical columns
-# ------------------------
 cat_cols = [
     'Gender', 'Department', 'Extracurricular_Activities',
     'Internet_Access_at_Home', 'Parent_Education_Level',
@@ -53,7 +50,7 @@ for c in cat_cols:
     encoders[c] = le
 
 # ------------------------
-# Train simple model
+# Train model
 # ------------------------
 X = df.drop('Total_Score', axis=1)
 y = df['Total_Score']
@@ -62,103 +59,37 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Background + CSS (blurred background only; keep UI on top)
+# Title + Logo
 # ------------------------
-def set_background_blur(image_path, blur_px=14, overlay_opacity=0.30):
-    with open(image_path, "rb") as f:
-        data = f.read()
-    b64 = base64.b64encode(data).decode()
+col1, col2 = st.columns([1,5])
+with col1:
+    st.image("GradeScope logo 1.png", width=80)
+with col2:
+    st.markdown("<h1 style='color: black; text-align: left;'>GradeScope</h1>", unsafe_allow_html=True)
 
-    css = f"""
-    <style>
-    /* Put a blurred background image behind everything (fixed) */
-    body::before {{
-        content: "";
-        position: fixed;
-        inset: 0;
-        background-image: url("data:image/png;base64,{b64}");
-        background-size: cover;
-        background-position: center;
-        filter: blur({blur_px}px);
-        transform: scale(1.03); /* reduce edge artifacts */
-        z-index: -3;
-        pointer-events: none;
-    }}
-
-    /* Dark overlay to improve contrast */
-    body::after {{
-        content: "";
-        position: fixed;
-        inset: 0;
-        background-color: rgba(0,0,0,{overlay_opacity});
-        z-index: -2;
-        pointer-events: none;
-    }}
-
-    /* Ensure Streamlit main content is above the background layers */
-    .stApp, .main, .block-container, .stSidebar, header {{
-        position: relative;
-        z-index: 1;
-    }}
-
-    /* Style form labels bold + italic and visible */
-    .stLabel, label, .css-1kyxreq.e16nr0p33, .stMarkdown {{
-        font-weight: 700 !important;
-        font-style: italic !important;
-        color: #ffffff !important;
-    }}
-
-    /* Make the form container slightly brighter so it stands out */
-    .block-container {{
-        background: rgba(255,255,255,0.02);
-        padding: 1rem 1.2rem;
-        border-radius: 8px;
-    }}
-
-    /* Tweak button style */
-    .stButton>button {{
-        font-weight: 700;
-    }}
-    </style>
-    """
-    st.markdown(css, unsafe_allow_html=True)
-
-# Call this with your background file name (adjust blur_px if needed)
-set_background_blur("A celebratory backgr.png", blur_px=14, overlay_opacity=0.30)
+st.markdown("### Student Performance Prediction")
 
 # ------------------------
-# Header: logo + title (black text)
-# ------------------------
-logo_col, title_col = st.columns([0.9, 6])
-with logo_col:
-    st.image("GradeScope logo 1.png", width=84)
-with title_col:
-    # black text as requested (it will still be readable due to overlay)
-    st.markdown("<h1 style='text-align: left; color: black; margin: 0;'>GradeScope</h1>", unsafe_allow_html=True)
-
-# ------------------------
-# Compact two-column form (left: sliders + numeric; right: other inputs)
+# Input Form
 # ------------------------
 with st.form("prediction_form"):
-    left, right = st.columns([1,1])
+    left, right = st.columns(2)
 
     with left:
         attendance = st.slider("Attendance (%)", 0, 100, 75)
         study_hours = st.slider("Study Hours/Week", 0, 60, 15)
         stress = st.slider("Stress Level (1-10)", 1, 10, 5)
         sleep = st.slider("Sleep Hours/Night", 0, 12, 7)
-
-        # additional numeric inputs placed under sliders for compactness
-        midterm = st.number_input("Midterm Score", min_value=0, max_value=100, value=50)
-        final = st.number_input("Final Score", min_value=0, max_value=100, value=60)
-        assignments = st.number_input("Assignments Avg", min_value=0, max_value=100, value=70)
-        projects = st.number_input("Projects Score", min_value=0, max_value=100, value=65)
+        midterm = st.number_input("Midterm Score", 0, 100, 50)
+        final = st.number_input("Final Score", 0, 100, 60)
 
     with right:
+        assignments = st.number_input("Assignments Avg", 0, 100, 70)
+        projects = st.number_input("Projects Score", 0, 100, 65)
+        quizzes = st.number_input("Quizzes Avg", 0, 100, 55)
         gender = st.selectbox("Gender", encoders['Gender'].classes_)
-        age = st.number_input("Age", min_value=10, max_value=30, value=18)
+        age = st.number_input("Age", 10, 30, 18)
         dept = st.selectbox("Department", encoders['Department'].classes_)
-        quizzes = st.number_input("Quizzes Avg", min_value=0, max_value=100, value=55)
         activities = st.selectbox("Extracurricular Activities", encoders['Extracurricular_Activities'].classes_)
         internet = st.selectbox("Internet Access at Home", encoders['Internet_Access_at_Home'].classes_)
         parent_edu = st.selectbox("Parent Education Level", encoders['Parent_Education_Level'].classes_)
@@ -167,7 +98,7 @@ with st.form("prediction_form"):
     submitted = st.form_submit_button("Predict")
 
 # ------------------------
-# Prediction handling
+# Prediction
 # ------------------------
 if submitted:
     input_data = {
@@ -188,9 +119,7 @@ if submitted:
         'Stress_Level (1-10)': stress,
         'Sleep_Hours_per_Night': sleep
     }
+
     input_df = pd.DataFrame([input_data])
     pred = model.predict(input_df)[0]
-    st.success(f"Predicted Total Score: {pred:.2f}")
-
-# Optional: small footer or instructions (kept minimal)
-st.caption("Enter details and click Predict. Design tuned for compact view.")
+    st.success(f"🎯 Predicted Total Score: {pred:.2f}")
