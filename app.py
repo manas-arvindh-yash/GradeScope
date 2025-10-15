@@ -102,13 +102,13 @@ add_bg("A celebratory backgr.png")
 
 
 # ------------------------
-# Logo + Title (without emoji)
+# Logo + Title (black text)
 # ------------------------
 col_logo, col_title = st.columns([1,5])
 with col_logo:
     st.image("GradeScope logo 1.png", width=90)
 with col_title:
-    st.markdown("<h1 style='text-align: left; color: white;'>GradeScope</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: left; color: black;'>GradeScope</h1>", unsafe_allow_html=True)
 
 
 # ------------------------
