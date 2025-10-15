@@ -8,30 +8,25 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Background Styling (darkened background only)
+# Background Styling (darkened background, visible content)
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
-    encoded = base64.b64encode(data).decode()
+    encoded = base64.b64encode(f.read()).decode()
 
     st.markdown(
         f"""
         <style>
-        /* Set background image */
-        body::before {{
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/png;base64,{encoded}");
+        /* Base background image (darkened) */
+        .stApp {{
+            background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            filter: brightness(0.4);  /* darkens the image */
-            z-index: -1;
+            filter: brightness(0.45); /* controls darkness */
         }}
 
-        /* Ensure content stays above the background */
-        .stApp, .main, .block-container {{
+        /* Keep all Streamlit components above background */
+        .block-container, .stForm, .stButton, .stSelectbox, .stSlider, .stNumberInput {{
             position: relative;
             z-index: 1;
         }}
@@ -40,7 +35,6 @@ def set_background(image_path):
         unsafe_allow_html=True
     )
 
-# Call the function with your uploaded image
 set_background("A celebratory backgr.png")
 # ------------------------
 # Page setup
