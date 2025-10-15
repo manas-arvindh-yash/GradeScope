@@ -58,7 +58,7 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Background Styling (only background image blurred)
+# Background Styling (blur only background, keep content visible)
 # ------------------------
 def add_bg(image_file):
     import base64
@@ -68,13 +68,15 @@ def add_bg(image_file):
     st.markdown(
         f"""
         <style>
+        /* Base background */
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
             position: relative;
+            z-index: 0;
         }}
 
-        /* Create a blurred background layer */
+        /* Blurred background layer */
         .stApp::before {{
             content: "";
             position: fixed;
@@ -84,11 +86,11 @@ def add_bg(image_file):
             height: 100%;
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: blur(14px);  /* Adjust blur here */
+            filter: blur(14px);
             z-index: -2;
         }}
 
-        /* Add a slight dark overlay for contrast */
+        /* Dark overlay layer */
         .stApp::after {{
             content: "";
             position: fixed;
@@ -99,12 +101,19 @@ def add_bg(image_file):
             background-color: rgba(0,0,0,0.25);
             z-index: -1;
         }}
+
+        /* Ensure all Streamlit widgets appear above background */
+        .block-container, .stForm, .stColumn, .stSelectbox, .stSlider, .stNumberInput, .stButton {{
+            position: relative;
+            z-index: 1;
+        }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
 add_bg("A celebratory backgr.png")
+
 
 
 
