@@ -8,24 +8,24 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Background Styling (darkened background, visible content)
+# Background Styling (darkened background, content visible)
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
         data = f.read()
-    encoded = base64.b64encode(f.read()).decode()
+    encoded = base64.b64encode(data).decode()   # ✅ fixed line — use data, not f.read()
 
     st.markdown(
         f"""
         <style>
-        /* Base background image (darkened) */
+        /* Darkened background image */
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(0.45); /* controls darkness */
+            filter: brightness(0.45); /* adjust to control darkness */
         }}
 
-        /* Keep all Streamlit components above background */
+        /* Ensure UI appears on top */
         .block-container, .stForm, .stButton, .stSelectbox, .stSlider, .stNumberInput {{
             position: relative;
             z-index: 1;
@@ -35,6 +35,7 @@ def set_background(image_path):
         unsafe_allow_html=True
     )
 
+# Call this with your uploaded image
 set_background("A celebratory backgr.png")
 # ------------------------
 # Page setup
