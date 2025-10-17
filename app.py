@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Dark background + bright content
+# Background dark, content bright
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -18,34 +18,34 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
-        /* Background image with dark filter */
+        /* Dark background image */
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(0.35); /* Darken background */
+            filter: brightness(0.4); /* darken background */
         }}
 
-        /* Keep all app content bright and readable */
+        /* Bright, semi-transparent card for content */
         .main .block-container {{
-            background: rgba(255, 255, 255, 0.15);  /* faint white glow behind form */
-            backdrop-filter: brightness(2) saturate(1.5);
+            background: rgba(255, 255, 255, 0.85); /* make this higher for brighter content */
             border-radius: 12px;
             padding: 2rem;
+            box-shadow: 0 0 25px rgba(0,0,0,0.3);
         }}
 
-        /* Make text bright */
+        /* Text styling – darker text for contrast */
         h1, h2, h3, label, p, span, div {{
-            color: #ffffff !important;
+            color: #000000 !important;
         }}
 
-        /* Keep widgets sharp and bright */
-        .stSlider, .stSelectbox, .stNumberInput, .stButton {{
-            color: #ffffff !important;
+        /* Inputs – keep them readable */
+        .stSelectbox, .stNumberInput, .stSlider, .stButton {{
+            color: #000000 !important;
         }}
 
-        /* Optional: slightly glow around form area */
-        .block-container {{
-            box-shadow: 0 0 25px rgba(255,255,255,0.05);
+        /* Optional: make sliders clearer */
+        .stSlider > div > div > div {{
+            background-color: #ff4b4b !important;
         }}
         </style>
         """,
