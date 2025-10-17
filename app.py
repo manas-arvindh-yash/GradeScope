@@ -1,11 +1,16 @@
-# app.py — Clean Normal Version
-import base64
+# app.py — Final Clean Version
 import streamlit as st
 import pandas as pd
 import numpy as np
+import base64
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
+
+# ------------------------
+# Page setup
+# ------------------------
+st.set_page_config(page_title="GradeScope", layout="centered")
 
 # ------------------------
 # Background: blurred image + white text
@@ -18,7 +23,7 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
-        /* Blurred background image */
+        /* Blurred background */
         .stApp::before {{
             content: "";
             position: fixed;
@@ -29,11 +34,11 @@ def set_background(image_path):
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
             filter: blur(10px);
-            transform: scale(1.05);  /* avoids edge blur cutoff */
+            transform: scale(1.05);
             z-index: -1;
         }}
 
-        /* Keep content on top */
+        /* Keep content visible */
         .stApp, .block-container, .main {{
             position: relative;
             z-index: 1;
@@ -48,15 +53,10 @@ def set_background(image_path):
         unsafe_allow_html=True
     )
 
-# Call with your background file
 set_background("A celebratory backgr.png")
-# ------------------------
-# Page setup
-# ------------------------
-st.set_page_config(page_title="GradeScope", layout="centered")
 
 # ------------------------
-# Load data
+# Load dataset
 # ------------------------
 @st.cache_data
 def load_data():
@@ -64,9 +64,6 @@ def load_data():
 
 df = load_data()
 
-# ------------------------
-# Prepare data
-# ------------------------
 required_columns = [
     'Gender', 'Age', 'Department', 'Attendance (%)',
     'Midterm_Score', 'Final_Score', 'Assignments_Avg',
@@ -79,9 +76,12 @@ required_columns = [
 if not all(col in df.columns for col in required_columns):
     st.error("Dataset missing required columns.")
     st.stop()
+
 df = df[required_columns]
 
+# ------------------------
 # Encode categorical columns
+# ------------------------
 cat_cols = [
     'Gender', 'Department', 'Extracurricular_Activities',
     'Internet_Access_at_Home', 'Parent_Education_Level',
@@ -109,7 +109,7 @@ col1, col2 = st.columns([1,5])
 with col1:
     st.image("GradeScope logo 1.png", width=80)
 with col2:
-    st.markdown("<h1 style='color: black; text-align: left;'>GradeScope</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: white; text-align: left;'>GradeScope</h1>", unsafe_allow_html=True)
 
 st.markdown("### Student Performance Prediction")
 
