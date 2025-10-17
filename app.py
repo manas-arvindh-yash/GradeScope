@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Background dark, everything else bright
+# Background: blurred image + white text
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -18,53 +18,37 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
-        /* Background stays dark */
-        .stApp {{
+        /* Blurred background image */
+        .stApp::before {{
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(0.35); /* dark background */
+            filter: blur(10px);
+            transform: scale(1.05);  /* avoids edge blur cutoff */
+            z-index: -1;
         }}
 
-        /* Bright container for all content */
-        .main .block-container {{
-            background: rgba(255, 255, 255, 0.9); /* bright white glass effect */
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 0 25px rgba(255,255,255,0.25);
+        /* Keep content on top */
+        .stApp, .block-container, .main {{
+            position: relative;
+            z-index: 1;
         }}
 
-        /* Bright black text and UI elements */
+        /* Make all text white */
         h1, h2, h3, label, p, span, div {{
-            color: #000000 !important;
-        }}
-
-        /* Form fields and widgets */
-        input, select, textarea, .stSelectbox, .stNumberInput, .stSlider, .stButton>button {{
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border-radius: 8px;
-        }}
-
-        /* Make sliders colorful */
-        .stSlider > div > div > div {{
-            background-color: #ff4b4b !important;
-        }}
-
-        /* Button styling */
-        .stButton>button {{
-            font-weight: 700;
-            color: white !important;
-            background: linear-gradient(90deg, #0072ff, #00c6ff);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
+            color: #ffffff !important;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
-# Apply the background
+# Call with your background file
 set_background("A celebratory backgr.png")
 # ------------------------
 # Page setup
