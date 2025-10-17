@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Dark background + bright content (white font visible)
+# Background dark, everything else bright
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -18,41 +18,53 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
-        /* Darkened background image */
+        /* Background stays dark */
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(0.35);
+            filter: brightness(0.35); /* dark background */
         }}
 
-        /* Bright, semi-transparent layer for main content */
+        /* Bright container for all content */
         .main .block-container {{
-            background: rgba(0, 0, 0, 0.6);  /* darker background under white text */
+            background: rgba(255, 255, 255, 0.9); /* bright white glass effect */
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 0 25px rgba(255,255,255,0.15);
+            box-shadow: 0 0 25px rgba(255,255,255,0.25);
         }}
 
-        /* Make all text bright white */
+        /* Bright black text and UI elements */
         h1, h2, h3, label, p, span, div {{
-            color: #ffffff !important;
+            color: #000000 !important;
         }}
 
-        /* Inputs readable on dark surface */
-        .stSelectbox, .stNumberInput, .stSlider, .stButton, input, select, textarea {{
-            color: #ffffff !important;
+        /* Form fields and widgets */
+        input, select, textarea, .stSelectbox, .stNumberInput, .stSlider, .stButton>button {{
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-radius: 8px;
         }}
 
-        /* Slider handle and track in a bright theme */
+        /* Make sliders colorful */
         .stSlider > div > div > div {{
             background-color: #ff4b4b !important;
+        }}
+
+        /* Button styling */
+        .stButton>button {{
+            font-weight: 700;
+            color: white !important;
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
-# Call function with your image file
+# Apply the background
 set_background("A celebratory backgr.png")
 # ------------------------
 # Page setup
