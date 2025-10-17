@@ -1,4 +1,4 @@
-# app.py — Final Clean Version
+# app.py — Final (Unblurred Background + Styled Prediction)
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,7 +13,7 @@ from sklearn.preprocessing import LabelEncoder
 st.set_page_config(page_title="GradeScope", layout="centered")
 
 # ------------------------
-# Background: blurred image + white text
+# Background: normal image, not blurred
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -23,30 +23,35 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
-        /* Blurred background */
-        .stApp::before {{
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        /* Background image (no blur) */
+        .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: blur(10px);
-            transform: scale(1.05);
-            z-index: -1;
         }}
 
-        /* Keep content visible */
-        .stApp, .block-container, .main {{
-            position: relative;
-            z-index: 1;
-        }}
-
-        /* Make all text white */
+        /* Bright readable text */
         h1, h2, h3, label, p, span, div {{
             color: #ffffff !important;
+        }}
+
+        /* Prediction text style */
+        .prediction-text {{
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #00ffff;
+            text-align: center;
+            font-family: 'Trebuchet MS', sans-serif;
+            text-transform: uppercase;
+        }}
+
+        /* Button style */
+        .stButton>button {{
+            background-color: #0072ff;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
         }}
         </style>
         """,
@@ -142,7 +147,7 @@ with st.form("prediction_form"):
     submitted = st.form_submit_button("Predict")
 
 # ------------------------
-# Prediction
+# Prediction Output
 # ------------------------
 if submitted:
     input_data = {
@@ -166,4 +171,9 @@ if submitted:
 
     input_df = pd.DataFrame([input_data])
     pred = model.predict(input_df)[0]
-    st.success(f"🎯 Predicted Total Score: {pred:.2f}")
+
+    # Custom styled output
+    st.markdown(
+        f"<p class='prediction-text'>YOUR PREDICTED SCORE IS: {pred:.2f}</p>",
+        unsafe_allow_html=True
+    )
