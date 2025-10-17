@@ -110,7 +110,7 @@ model.fit(X_train, y_train)
 st.markdown(
     """
     <div class='center-title'>
-        <img src='GradeScope logo 1.png' width='80'>
+        <img src='GradeScope logo 1.png' width='120'>
         <h1 style='color:white;'>GradeScope</h1>
     </div>
     """,
