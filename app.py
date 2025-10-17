@@ -1,4 +1,4 @@
-# app.py — GradeScope (Landscape + Bright + New Background)
+# app.py — Centered Header + Inline Prediction Result
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,13 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
-# ------------------------
-# Page setup
-# ------------------------
 st.set_page_config(page_title="GradeScope", layout="wide")
 
 # ------------------------
-# Background setup (using new image)
+# Background
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -31,12 +28,12 @@ def set_background(image_path):
             color: #ffffff !important;
         }}
         .prediction-text {{
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: #00ffff;
-            text-align: center;
             font-family: 'Trebuchet MS', sans-serif;
             text-transform: uppercase;
+            margin-left: 20px;
         }}
         .stButton>button {{
             background-color: #0072ff;
@@ -46,11 +43,16 @@ def set_background(image_path):
             border-radius: 8px;
             padding: 0.6rem 1.2rem;
         }}
-        /* Compact layout styling */
         .block-container {{
             padding-top: 1rem;
             padding-bottom: 1rem;
             max-width: 95%;
+        }}
+        .center-title {{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }}
         </style>
         """,
@@ -83,9 +85,7 @@ if not all(col in df.columns for col in required_columns):
 
 df = df[required_columns]
 
-# ------------------------
 # Encode categorical columns
-# ------------------------
 cat_cols = [
     'Gender', 'Department', 'Extracurricular_Activities',
     'Internet_Access_at_Home', 'Parent_Education_Level',
@@ -97,9 +97,7 @@ for c in cat_cols:
     df[c] = le.fit_transform(df[c])
     encoders[c] = le
 
-# ------------------------
 # Train model
-# ------------------------
 X = df.drop('Total_Score', axis=1)
 y = df['Total_Score']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -107,18 +105,22 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Title and layout
+# Header
 # ------------------------
-col1, col2 = st.columns([1,5])
-with col1:
-    st.image("GradeScope logo 1.png", width=80)
-with col2:
-    st.markdown("<h1 style='color: white; text-align: left;'>GradeScope</h1>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div class='center-title'>
+        <img src='GradeScope logo 1.png' width='80'>
+        <h1 style='color:white;'>GradeScope</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown("### Student Performance Prediction")
 
 # ------------------------
-# Input Form (Landscape fit)
+# Input Form
 # ------------------------
 with st.form("prediction_form"):
     c1, c2, c3 = st.columns(3)
@@ -145,7 +147,12 @@ with st.form("prediction_form"):
         parent_edu = st.selectbox("Parent Education Level", encoders['Parent_Education_Level'].classes_)
         income = st.selectbox("Family Income Level", encoders['Family_Income_Level'].classes_)
 
-    submitted = st.form_submit_button("Predict")
+    submit_col, result_col = st.columns([1, 3])
+    with submit_col:
+        submitted = st.form_submit_button("Predict")
+    with result_col:
+        st.markdown("", unsafe_allow_html=True)
+        result_placeholder = st.empty()
 
 # ------------------------
 # Prediction Output
@@ -173,7 +180,7 @@ if submitted:
     input_df = pd.DataFrame([input_data])
     pred = model.predict(input_df)[0]
 
-    st.markdown(
+    result_placeholder.markdown(
         f"<p class='prediction-text'>YOUR PREDICTED SCORE IS: {pred:.2f}</p>",
         unsafe_allow_html=True
     )
