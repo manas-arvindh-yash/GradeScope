@@ -1,4 +1,3 @@
-# app.py — Centered Header + Inline Prediction Result
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -10,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 st.set_page_config(page_title="GradeScope", layout="wide")
 
 # ------------------------
-# Background
+# Background (no blur)
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -20,21 +19,53 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
+        /* Background image */
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
         }}
+
+        /* Global text color */
         h1, h2, h3, label, p, span, div {{
             color: #ffffff !important;
         }}
+
+        /* Title + logo layout */
+        .center-title {{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }}
+
+        .center-title img {{
+            width: 70px;
+            height: auto;
+            border-radius: 10px;
+        }}
+
+        .center-title h1 {{
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            padding-top: 10px;  /* lowers the title */
+        }}
+
+        /* Prediction text */
         .prediction-text {{
             font-size: 1.5rem;
             font-weight: 800;
             color: #00ffff;
             font-family: 'Trebuchet MS', sans-serif;
             text-transform: uppercase;
-            margin-left: 20px;
+            margin-left: 15px;
+            display: inline;
         }}
+
+        /* Predict button */
         .stButton>button {{
             background-color: #0072ff;
             color: white;
@@ -42,17 +73,14 @@ def set_background(image_path):
             border: none;
             border-radius: 8px;
             padding: 0.6rem 1.2rem;
+            display: inline;
+            margin-right: 10px;
         }}
+
         .block-container {{
             padding-top: 1rem;
             padding-bottom: 1rem;
             max-width: 95%;
-        }}
-        .center-title {{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
         }}
         </style>
         """,
@@ -105,19 +133,17 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 # ------------------------
-# Header
+# Header (Logo + Title)
 # ------------------------
 st.markdown(
     """
     <div class='center-title'>
-        <img src='GradeScope logo 1.png' width='120'>
-        <h1 style='color:white;'>GradeScope</h1>
+        <img src='GradeScope logo 1.png'>
+        <h1>GradeScope</h1>
     </div>
     """,
     unsafe_allow_html=True
 )
-
-st.markdown("### Student Performance Prediction")
 
 # ------------------------
 # Input Form
@@ -147,11 +173,11 @@ with st.form("prediction_form"):
         parent_edu = st.selectbox("Parent Education Level", encoders['Parent_Education_Level'].classes_)
         income = st.selectbox("Family Income Level", encoders['Family_Income_Level'].classes_)
 
-    submit_col, result_col = st.columns([1, 3])
-    with submit_col:
+    # Predict button and result side by side (no gap)
+    c_btn, c_output = st.columns([1, 4])
+    with c_btn:
         submitted = st.form_submit_button("Predict")
-    with result_col:
-        st.markdown("", unsafe_allow_html=True)
+    with c_output:
         result_placeholder = st.empty()
 
 # ------------------------
