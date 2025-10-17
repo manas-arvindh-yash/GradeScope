@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 
 # ------------------------
-# Background dark, content bright
+# Dark background + bright content (white font visible)
 # ------------------------
 def set_background(image_path):
     with open(image_path, "rb") as f:
@@ -18,32 +18,32 @@ def set_background(image_path):
     st.markdown(
         f"""
         <style>
-        /* Dark background image */
+        /* Darkened background image */
         .stApp {{
             background: url("data:image/png;base64,{encoded}") no-repeat center center fixed;
             background-size: cover;
-            filter: brightness(0.4); /* darken background */
+            filter: brightness(0.35);
         }}
 
-        /* Bright, semi-transparent card for content */
+        /* Bright, semi-transparent layer for main content */
         .main .block-container {{
-            background: rgba(255, 255, 255, 0.85); /* make this higher for brighter content */
-            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.6);  /* darker background under white text */
+            border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 0 25px rgba(0,0,0,0.3);
+            box-shadow: 0 0 25px rgba(255,255,255,0.15);
         }}
 
-        /* Text styling – darker text for contrast */
+        /* Make all text bright white */
         h1, h2, h3, label, p, span, div {{
-            color: #000000 !important;
+            color: #ffffff !important;
         }}
 
-        /* Inputs – keep them readable */
-        .stSelectbox, .stNumberInput, .stSlider, .stButton {{
-            color: #000000 !important;
+        /* Inputs readable on dark surface */
+        .stSelectbox, .stNumberInput, .stSlider, .stButton, input, select, textarea {{
+            color: #ffffff !important;
         }}
 
-        /* Optional: make sliders clearer */
+        /* Slider handle and track in a bright theme */
         .stSlider > div > div > div {{
             background-color: #ff4b4b !important;
         }}
@@ -52,6 +52,7 @@ def set_background(image_path):
         unsafe_allow_html=True
     )
 
+# Call function with your image file
 set_background("A celebratory backgr.png")
 # ------------------------
 # Page setup
